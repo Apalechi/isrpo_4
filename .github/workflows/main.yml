@@ -1,0 +1,39 @@
+name: Unit Tests CI
+
+# Запуск при каждом push в любую ветку
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+
+# Задачи для выполнения
+jobs:
+  test:
+    # Стратегия матрицы для запуска на разных ОС
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    # Шаг 1: Клонирование репозитория
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    # Шаг 2: Установка Python
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    # Шаг 3: Вывод версии Python (для отладки)
+    - name: Display Python version
+      run: python --version
+    
+    # Шаг 4: Запуск unit тестов
+    - name: Run unit tests
+      run: |
+        cd tests
+        python run_all_tests.py
